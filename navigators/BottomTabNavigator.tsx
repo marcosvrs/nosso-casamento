@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import CheckoutNavigator from "./CheckoutNavigator";
 import StackNavigator from "./StackNavigator";
-import { Colors } from "../constants/Colors";
+import Colors from "../constants/Colors";
 
 export default class BottomTabNavigator extends Component {
     private Tab = createBottomTabNavigator();
@@ -12,7 +12,7 @@ export default class BottomTabNavigator extends Component {
         return <this.Tab.Navigator
             tabBarOptions={{
                 showLabel: false,
-                activeTintColor: Colors.primary
+                activeTintColor: Colors.accent
             }}>
             <this.Tab.Screen name="List" component={StackNavigator} options={{
                 tabBarIcon: ({ focused, color, size }) => <Ionicons name={`gift${focused ? '' : '-outline'}`} color={color} size={size} />

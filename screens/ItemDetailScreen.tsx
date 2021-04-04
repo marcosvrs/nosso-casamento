@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Dimensions, Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { RouteProp } from "@react-navigation/core";
 import { StackScreenProps } from "@react-navigation/stack";
 import Button from "../components/Button";
@@ -7,25 +7,42 @@ import Text from "../components/Text";
 import { ITEMS } from "../data/dummy-items";
 import Item from "../models/item";
 import RootStackParamList from "../navigators/RootStackParamList";
+import { ScrollView } from "react-native-gesture-handler";
 
-export default class ItemScreen extends Component<StackScreenProps<RootStackParamList, 'Item'>> {
+export default class ItemDetailScreen extends Component<StackScreenProps<RootStackParamList, 'Item'>> {
     private item?: Item;
     private styles = StyleSheet.create({
         container: {
-            flex: 1,
-            alignItems: 'center'
-        },
-        imageContainer: {
             flex: 1
         },
+        imageContainer: {
+            height: '50%',
+            width: '100%',
+            marginBottom: 16
+        },
         image: {
-            flex: 1,
+            width: '100%',
+            height: '100%',
             resizeMode: 'contain'
+        },
+        detailsContainer: {
+            marginBottom: 16
+        },
+        name: {
+            fontFamily: 'poppins-bold',
+            fontSize: 32
+        },
+        price: {
+            fontSize: 24
+        },
+        description: {},
+        buttonContainer: {
+            flexDirection: 'column',
+            alignItems: 'center'
         },
         button: {
             width: '40%',
-            height: 50,
-            marginVertical: 16
+            height: 50
         }
     });
     static navigationOptions(props: {
@@ -53,13 +70,18 @@ export default class ItemScreen extends Component<StackScreenProps<RootStackPara
             </View>
         }
 
-        return <View style={this.styles.container}>
+        return <ScrollView contentContainerStyle={this.styles.container}>
             <View style={this.styles.imageContainer}>
                 <Image style={this.styles.image} source={this.item.image} />
             </View>
-            <Text>{this.item.name}</Text>
-            <Text>R${this.item.value}</Text>
-            <Button style={this.styles.button}>Comprar</Button>
-        </View>;
+            <View style={this.styles.detailsContainer}>
+                <Text style={this.styles.name}>{this.item.name}</Text>
+                <Text style={this.styles.price}>{this.item.getValueCurrency()}</Text>
+                <Text style={this.styles.description}>{this.item.description}</Text>
+            </View>
+            <View style={this.styles.buttonContainer}>
+                <Button style={this.styles.button}>Comprar</Button>
+            </View>
+        </ScrollView>;
     }
 }

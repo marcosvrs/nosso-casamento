@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Colors } from "../constants/Colors";
+import Colors from "../constants/Colors";
 import RootStackParamList from "./RootStackParamList";
 import CartScreen from "../screens/CartScreen";
 

@@ -3,14 +3,13 @@ import { GestureResponderEvent, StyleSheet } from "react-native";
 import { StackHeaderTitleProps } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "./Button";
-import { currentNavigate } from "../navigators/RootNavigator";
 
-interface HeaderProps extends StackHeaderTitleProps {
+interface AddButtonProps extends StackHeaderTitleProps {
     tintColor?: string;
     onPress(event: GestureResponderEvent): void;
 }
 
-export default class Header extends Component<HeaderProps> {
+export default class AddButton extends Component<AddButtonProps> {
     private styles = StyleSheet.create({
         container: {
             flexDirection: 'row',
@@ -24,13 +23,8 @@ export default class Header extends Component<HeaderProps> {
         }
     });
 
-    private onPress() {
-        // console.log(this.props);
-        currentNavigate('NewItem');
-    }
-
     render() {
-        return <Button style={this.styles.button} onPress={this.onPress}>
+        return <Button style={this.styles.button} onPress={this.props.onPress}>
             <Ionicons name="add-circle" color={this.props.tintColor ?? 'white'} size={32} />
         </Button>;
     }

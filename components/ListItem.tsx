@@ -47,7 +47,7 @@ export default class ListItem extends Component<ListItemProps> {
             <Pressable style={this.styles.touchContainer} onPress={this.props.onPress}>
                 <Image style={this.styles.image} source={this.props.item.image} />
                 <Text style={{ ...this.styles.text, ...this.styles.name }}>{this.props.item.name}</Text>
-                <Text style={{ ...this.styles.text, ...this.styles.price }}>R${this.props.item.value}</Text>
+                <Text style={{ ...this.styles.text, ...this.styles.price }}>{this.props.item.getValueCurrency()}</Text>
             </Pressable>
         </Card>;
     }

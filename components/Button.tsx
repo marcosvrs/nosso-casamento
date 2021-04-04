@@ -1,5 +1,6 @@
 import React, { Component, ReactNode } from "react";
 import { StyleProp, StyleSheet, TouchableOpacity, TouchableOpacityProps, ViewStyle } from "react-native";
+import Colors from "../constants/Colors";
 import Text from "./Text";
 
 interface ButtonProps extends TouchableOpacityProps {
@@ -10,18 +11,19 @@ interface ButtonProps extends TouchableOpacityProps {
 
 export default class Button extends Component<ButtonProps> {
     private styles = StyleSheet.create({
-        container: {
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            padding: 8,
-            borderRadius: 4
-        },
-        buttonText: {
-            fontSize: 12,
-            textAlign: 'center'
-        }
-    });
+            container: {
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 8,
+                borderRadius: 12,
+                backgroundColor: Colors.primary
+            },
+            buttonText: {
+                fontFamily: 'poppins-bold',
+                textAlign: 'center',
+                color: 'white'
+            }
+        });
 
     constructor(props: ButtonProps) {
         super(props);
