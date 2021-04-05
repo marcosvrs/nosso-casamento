@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import * as Font from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
-import BottomTabNavigator from "./navigators/BottomTabNavigator";
-import { navigationRef } from "./navigators/RootNavigator";
+import { Provider } from "react-redux";
+import store from "./store/store";
+import { StatusBar } from "react-native";
+import { enableScreens } from "react-native-screens";
+import CheckoutNavigator from "./navigations/CheckoutNavigator";
 
 export default class App extends Component {
 
@@ -26,9 +29,13 @@ export default class App extends Component {
     if (!this.state.fontsLoaded) {
       return null;
     }
+    enableScreens();
 
-    return <NavigationContainer ref={navigationRef}>
-      <BottomTabNavigator />
-    </NavigationContainer>;
+    return <Provider store={store}>
+      <StatusBar hidden={true} />
+      <NavigationContainer>
+        <CheckoutNavigator />
+      </NavigationContainer>
+    </Provider>;
   }
 }

@@ -1,36 +1,65 @@
 import React, { Component } from "react";
-import { FlatList, ListRenderItemInfo, StyleSheet } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
-import ListItem from "../components/ListItem";
-import { ITEMS } from "../data/dummy-items";
-import Item from "../models/item";
-import RootStackParamList from "../navigators/RootStackParamList";
+import { Ionicons } from "@expo/vector-icons";
+import ItemsStackParamList from "../navigations/ItemsStackParamList";
+import Text from "../components/Text";
 
-export default class HomeScreen extends Component<StackScreenProps<RootStackParamList, 'Home'>> {
+export default class HomeScreen extends Component<StackScreenProps<ItemsStackParamList, 'ItemList'>> {
     private styles = StyleSheet.create({
         container: {
+            flex: 1,
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center'
         },
-        listItem: {
-            margin: 8
+        text: {
+            fontSize: 40
         }
     });
 
-    goToItem(item: Item) {
-        this.props.navigation.navigate('Item', { itemId: item.id });
-    }
+    private AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
-    private mapItems(itemData: ListRenderItemInfo<Item>) {
-        return <ListItem
-            style={this.styles.listItem}
-            item={itemData.item}
-            onPress={this.goToItem.bind(this, itemData.item)} />;
+    state = {
+        pulse: new Animated.Value(0)
     }
 
     render() {
-        return <FlatList
-            contentContainerStyle={this.styles.container}
-            data={ITEMS}
-            numColumns={2}
-            renderItem={this.mapItems.bind(this)} />;
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(this.state.pulse, {
+                    toValue: 100,
+                    duration: 100,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.pulse, {
+                    toValue: 0,
+                    duration: 100,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.pulse, {
+                    toValue: 100,
+                    duration: 100,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.pulse, {
+                    toValue: 0,
+                    duration: 2000,
+                    useNativeDriver: true
+                })
+            ])
+        ).start();
+
+        return <View style={this.styles.container}>
+            <Text style={this.styles.text}>Nosso Casamento</Text>
+            <this.AnimatedIcon style={{
+                transform: [{
+                    scale: this.state.pulse.interpolate({
+                        inputRange: [0, 100],
+                        outputRange: [1, 0.9]
+                    })
+                }]
+            }} name="heart" color="red" size={160} />
+        </View>;
     }
 }

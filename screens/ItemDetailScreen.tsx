@@ -1,16 +1,23 @@
 import React, { Component } from "react"
 import { Image, StyleSheet, View } from "react-native";
-import { RouteProp } from "@react-navigation/core";
 import { StackScreenProps } from "@react-navigation/stack";
 import Button from "../components/Button";
 import Text from "../components/Text";
-import { ITEMS } from "../data/dummy-items";
-import Item from "../models/item";
-import RootStackParamList from "../navigators/RootStackParamList";
+import ItemsStackParamList from "../navigations/ItemsStackParamList";
 import { ScrollView } from "react-native-gesture-handler";
+import { connect, ConnectedProps } from "react-redux";
+import { addToCart } from "../store/actions/checkout";
 
-export default class ItemDetailScreen extends Component<StackScreenProps<RootStackParamList, 'Item'>> {
-    private item?: Item;
+const connector = connect(
+    (state, ownProps) =>
+        ({ item: state.items.itemList[ownProps.route.params.itemId] }),
+    { addToCart }
+);
+
+interface ItemDetailScreenProps extends StackScreenProps<ItemsStackParamList, 'Item'>, ConnectedProps<typeof connector> {
+}
+
+class ItemDetailScreen extends Component<ItemDetailScreenProps> {
     private styles = StyleSheet.create({
         container: {
             flex: 1
@@ -22,8 +29,7 @@ export default class ItemDetailScreen extends Component<StackScreenProps<RootSta
         },
         image: {
             width: '100%',
-            height: '100%',
-            resizeMode: 'contain'
+            height: '100%'
         },
         detailsContainer: {
             marginBottom: 16
@@ -45,26 +51,19 @@ export default class ItemDetailScreen extends Component<StackScreenProps<RootSta
             height: 50
         }
     });
-    static navigationOptions(props: {
-        route: RouteProp<RootStackParamList, 'Item'>;
-        navigation: any;
-    }) {
-        const itemId = props.route.params.itemId;
-        const item = ITEMS.find((item) => item.id === itemId);
 
-        return {
-            title: item?.name
+    componentDidMount() {
+        this.props.navigation.setOptions({ title: this.props.item?.name });
+    }
+
+    private addToCart() {
+        if (this.props.item !== undefined) {
+            this.props.addToCart(this.props.item.id);
         }
     }
 
-    constructor(props: StackScreenProps<RootStackParamList, 'Item'>) {
-        super(props);
-        const itemId = props.route.params.itemId;
-        this.item = ITEMS.find((item) => item.id === itemId);
-    }
-
     render() {
-        if (this.item === undefined) {
+        if (this.props.item === undefined) {
             return <View style={this.styles.container}>
                 <Text>Item not found!</Text>
             </View>
@@ -72,16 +71,18 @@ export default class ItemDetailScreen extends Component<StackScreenProps<RootSta
 
         return <ScrollView contentContainerStyle={this.styles.container}>
             <View style={this.styles.imageContainer}>
-                <Image style={this.styles.image} source={this.item.image} />
+                <Image style={this.styles.image} source={this.props.item.image} />
             </View>
             <View style={this.styles.detailsContainer}>
-                <Text style={this.styles.name}>{this.item.name}</Text>
-                <Text style={this.styles.price}>{this.item.getValueCurrency()}</Text>
-                <Text style={this.styles.description}>{this.item.description}</Text>
+                <Text style={this.styles.name}>{this.props.item.name}</Text>
+                <Text style={this.styles.price}>{this.props.item.getValueCurrency()}</Text>
+                <Text style={this.styles.description}>{this.props.item.description}</Text>
             </View>
             <View style={this.styles.buttonContainer}>
-                <Button style={this.styles.button}>Comprar</Button>
+                <Button style={this.styles.button} onPress={this.addToCart.bind(this)}>Comprar</Button>
             </View>
         </ScrollView>;
     }
 }
+
+export default connector(ItemDetailScreen)

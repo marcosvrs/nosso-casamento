@@ -3,9 +3,9 @@ import { Alert, StyleSheet, View } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import RootStackParamList from "../navigators/RootStackParamList";
+import ItemsStackParamList from "../navigations/ItemsStackParamList";
 
-export default class NewItemScreen extends Component<StackScreenProps<RootStackParamList, 'Home'>> {
+export default class NewItemScreen extends Component<StackScreenProps<ItemsStackParamList, 'NewItem'>> {
     private styles = StyleSheet.create({
         container: {
             paddingHorizontal: 8,
