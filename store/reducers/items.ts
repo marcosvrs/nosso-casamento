@@ -1,15 +1,11 @@
 import { ITEMS } from "../../data/dummy-items";
 import Item from "../../models/item";
+import createReducer from "../createReducer";
 
-const initialState: {
-    itemList: { [key: string]: Item };
-} = { itemList: ITEMS };
-
-const itemsReducer = (state = initialState, action) => {
-    switch (action.type) {
-        default:
-            return state;
-    }
+export interface ItemsState {
+    itemList: { [key: string]: Item | undefined };
 }
 
-export default itemsReducer;
+export default createReducer({ itemList: ITEMS }, {
+    test: (state: ItemsState) => state
+});

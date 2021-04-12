@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
-import ItemsStackParamList from "../navigations/ItemsStackParamList";
+import ItemsStackParamList from "../navigation/ItemsStackParamList";
 import Text from "../components/Text";
 
 export default class HomeScreen extends Component<StackScreenProps<ItemsStackParamList, 'ItemList'>> {

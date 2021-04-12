@@ -1,8 +1,13 @@
-import { createStore } from "redux";
-import checkoutReducer from "./reducers/checkout";
-import itemsReducer from "./reducers/items";
+import { Action, createStore } from "redux";
+import checkoutReducer, { CheckoutState } from "./reducers/checkout";
+import itemsReducer, { ItemsState } from "./reducers/items";
 
-const store = createStore((state = {}, action) => ({
+export interface RootState {
+    items: ItemsState;
+    checkout: CheckoutState;
+}
+
+const store = createStore((state: RootState = {}, action: Action): RootState => ({
     items: itemsReducer(state.items, action, state),
     checkout: checkoutReducer(state.checkout, action, state)
 }));

@@ -3,7 +3,7 @@ import { FlatList, ListRenderItemInfo, StyleSheet } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import ListItem from "../components/ListItem";
 import Item from "../models/item";
-import ItemsStackParamList from "../navigations/ItemsStackParamList";
+import ItemsStackParamList from "../navigation/ItemsStackParamList";
 import { connect, ConnectedProps } from "react-redux";
 
 const connector = connect((state) => ({ itemList: state.items.itemList }));

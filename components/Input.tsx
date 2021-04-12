@@ -4,9 +4,10 @@ import { StyleSheet, TextInput, TextInputProps } from "react-native";
 export default class Input extends Component<TextInputProps> {
     private styles = StyleSheet.create({
         input: {
+            paddingHorizontal: 4,
+            paddingVertical: 4,
             borderBottomColor: 'gray',
-            borderBottomWidth: 1,
-            paddingBottom: 4
+            borderBottomWidth: 1
         }
     });
 

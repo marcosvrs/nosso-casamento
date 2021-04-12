@@ -3,7 +3,7 @@ import { Alert, StyleSheet, View } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import ItemsStackParamList from "../navigations/ItemsStackParamList";
+import ItemsStackParamList from "../navigation/ItemsStackParamList";
 
 export default class NewItemScreen extends Component<StackScreenProps<ItemsStackParamList, 'NewItem'>> {
     private styles = StyleSheet.create({
@@ -107,7 +107,7 @@ export default class NewItemScreen extends Component<StackScreenProps<ItemsStack
                     value={this.state.enteredItemName} />
                 <Input
                     blurOnSubmit
-                    keyboardType="numeric"
+                    keyboardType="decimal-pad"
                     style={this.styles.input}
                     placeholder="Item Value"
                     onChangeText={this.itemValueInputHandler.bind(this)}

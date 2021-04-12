@@ -3,10 +3,11 @@ import { Image, StyleSheet, View } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import Button from "../components/Button";
 import Text from "../components/Text";
-import ItemsStackParamList from "../navigations/ItemsStackParamList";
+import ItemsStackParamList from "../navigation/ItemsStackParamList";
 import { ScrollView } from "react-native-gesture-handler";
 import { connect, ConnectedProps } from "react-redux";
 import { addToCart } from "../store/actions/checkout";
+import { Observer } from "../components/Observer";
 
 const connector = connect(
     (state, ownProps) =>
@@ -32,6 +33,7 @@ class ItemDetailScreen extends Component<ItemDetailScreenProps> {
             height: '100%'
         },
         detailsContainer: {
+            flex: 1,
             marginBottom: 16
         },
         name: {
@@ -41,18 +43,21 @@ class ItemDetailScreen extends Component<ItemDetailScreenProps> {
         price: {
             fontSize: 24
         },
-        description: {},
+        description: {
+            flex: 1
+        },
         buttonContainer: {
             flexDirection: 'column',
             alignItems: 'center'
         },
         button: {
-            width: '40%',
-            height: 50
+            width: '80%',
+            marginBottom: 16,
+            padding: 16
         }
     });
 
-    componentDidMount() {
+    private updateTitle() {
         this.props.navigation.setOptions({ title: this.props.item?.name });
     }
 
@@ -79,8 +84,9 @@ class ItemDetailScreen extends Component<ItemDetailScreenProps> {
                 <Text style={this.styles.description}>{this.props.item.description}</Text>
             </View>
             <View style={this.styles.buttonContainer}>
-                <Button style={this.styles.button} onPress={this.addToCart.bind(this)}>Comprar</Button>
+                <Button style={this.styles.button} onPress={this.addToCart.bind(this)}>Presentear</Button>
             </View>
+            <Observer value={this.props.item?.name} didUpdate={this.updateTitle.bind(this)} />
         </ScrollView>;
     }
 }

@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, ListRenderItemInfo } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import Text from "../components/Text";
 import { connect, ConnectedProps } from "react-redux";
-import CheckoutStackParamList from "../navigations/CheckoutStackParamList";
+import CheckoutStackParamList from "../navigation/CheckoutStackParamList";
 import { CartItem } from "../models/cartItem";
 import CartListItem from "../components/CartListItem";
 import Button from "../components/Button";
@@ -69,7 +69,7 @@ class CartScreen extends Component<CartScreenProps> {
         const totalValue: number = Object.values(this.props.checkoutItems).reduce((acc, curr) => acc + curr.value, 0);
         if (this.props.checkoutItemsLength <= 0) {
             return <View style={this.styles.container}>
-                <Text style={this.styles.emptyCart}>Seu carrinho está vazio!</Text>
+                <Text style={this.styles.emptyCart}>Nada por aqui! 🤷‍♂️</Text>
             </View>;
         }
 
