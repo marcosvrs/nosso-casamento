@@ -1,4 +1,5 @@
-import { Action, createStore } from "redux";
+import { Action, applyMiddleware, createStore } from "redux";
+import thunk from "redux-thunk";
 import checkoutReducer, { CheckoutState } from "./reducers/checkout";
 import itemsReducer, { ItemsState } from "./reducers/items";
 
@@ -10,6 +11,6 @@ export interface RootState {
 const store = createStore((state: RootState = {}, action: Action): RootState => ({
     items: itemsReducer(state.items, action, state),
     checkout: checkoutReducer(state.checkout, action, state)
-}));
+}), applyMiddleware(thunk))
 
-export default store;
+export default store

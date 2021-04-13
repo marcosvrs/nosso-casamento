@@ -1,12 +1,13 @@
-import { StackScreenProps } from "@react-navigation/stack"
-import React, { Component } from "react"
+import React, { FunctionComponent } from "react"
 import { StyleSheet, View } from "react-native"
+import { StackScreenProps } from "@react-navigation/stack"
 import Text from "../components/Text"
 import CheckoutStackParamList from "../navigation/CheckoutStackParamList"
+import { useSelector } from "react-redux"
+import { RootState } from "../store/store"
 
-
-export default class PaymentScreen extends Component<StackScreenProps<CheckoutStackParamList, 'Guest'>> {
-    private styles = StyleSheet.create({
+const PaymentScreen: FunctionComponent<StackScreenProps<CheckoutStackParamList, 'Guest'>> = () => {
+    const styles = StyleSheet.create({
         container: {
             flex: 1,
             justifyContent: 'center',
@@ -17,9 +18,12 @@ export default class PaymentScreen extends Component<StackScreenProps<CheckoutSt
         }
     });
 
-    render() {
-        return <View style={this.styles.container}>
-            <Text style={this.styles.text}>Hora de pagar! 🤑</Text>
-        </View>
-    }
+    const checkout = useSelector<RootState>(state => state.checkout);
+
+    return <View style={styles.container}>
+        {/* <Text style={styles.text}>Hora de pagar! 🤑</Text> */}
+        <Text style={styles.text}>{JSON.stringify(checkout)}</Text>
+    </View>
 }
+
+export default PaymentScreen

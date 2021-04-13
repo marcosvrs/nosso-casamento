@@ -6,14 +6,34 @@ import { RootState } from "../store";
 
 export interface CheckoutState {
     checkoutItems: { [key: string]: CartItem | undefined };
+    guest: {
+        name: string;
+        email: string;
+        address: string;
+        phone: string;
+    };
+    vows: string;
     checkoutItemsLength: number;
 }
 
-interface CheckoutAction<T extends CHECKOUT_ACTIONS> extends Action<T> {
+interface CartAction extends Action<CHECKOUT_ACTIONS.ADD_TO_CART | CHECKOUT_ACTIONS.REMOVE_FROM_CART> {
     itemId: string;
 }
 
-function addToCart(state: CheckoutState, action: CheckoutAction<CHECKOUT_ACTIONS.ADD_TO_CART>, root: RootState) {
+interface GuestAction extends Action<CHECKOUT_ACTIONS.SET_GUEST> {
+    guest: {
+        name: string;
+        email: string;
+        address: string;
+        phone: string;
+    };
+}
+
+interface VowsAction extends Action<CHECKOUT_ACTIONS.SET_VOWS> {
+    vows: string;
+}
+
+function addToCart(state: CheckoutState, action: CartAction, root: RootState) {
     if (state.checkoutItems[action.itemId] !== undefined) {
         return state;
     }
@@ -29,7 +49,7 @@ function addToCart(state: CheckoutState, action: CheckoutAction<CHECKOUT_ACTIONS
     return { ...state };
 }
 
-function removeFromCart(state: CheckoutState, action: CheckoutAction<CHECKOUT_ACTIONS.REMOVE_FROM_CART>) {
+function removeFromCart(state: CheckoutState, action: CartAction) {
     if (state.checkoutItems[action.itemId] === undefined) {
         return state;
     }
@@ -41,10 +61,33 @@ function removeFromCart(state: CheckoutState, action: CheckoutAction<CHECKOUT_AC
     return { ...state };
 }
 
+function setGuest(state: CheckoutState, action: GuestAction) {
+    return {
+        ...state,
+        guest: action.guest
+    };
+}
+
+function setVows(state: CheckoutState, action: VowsAction) {
+    return {
+        ...state,
+        vows: action.vows
+    };
+}
+
 export default createReducer({
     checkoutItems: {},
+    guest: {
+        name: '',
+        email: '',
+        address: '',
+        phone: ''
+    },
+    vows: '',
     checkoutItemsLength: 0
 }, {
     [CHECKOUT_ACTIONS.ADD_TO_CART]: addToCart,
-    [CHECKOUT_ACTIONS.REMOVE_FROM_CART]: removeFromCart
-});
+    [CHECKOUT_ACTIONS.REMOVE_FROM_CART]: removeFromCart,
+    [CHECKOUT_ACTIONS.SET_GUEST]: setGuest,
+    [CHECKOUT_ACTIONS.SET_VOWS]: setVows
+})

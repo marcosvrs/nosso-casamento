@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { FunctionComponent } from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
 
-export default class Card extends Component<ViewProps> {
-    private styles = StyleSheet.create({
+const Card: FunctionComponent<ViewProps> = (props) => {
+    const styles = StyleSheet.create({
         container: {
             backgroundColor: 'white',
             shadowOffset: {
@@ -16,10 +16,9 @@ export default class Card extends Component<ViewProps> {
             padding: 16
         }
     });
-
-    render() {
-        return <View style={{ ...this.styles.container, ...(this.props.style || {}) }}>
-            {this.props.children}
-        </View>;
-    }
+    return <View {...props} style={{ ...styles.container, ...(props.style || {}) }}>
+        {props.children}
+    </View>;
 }
+
+export default Card

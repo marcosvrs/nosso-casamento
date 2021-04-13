@@ -1,42 +1,46 @@
-import React, { Component } from "react";
+import React, { FunctionComponent } from "react";
 import { createStackNavigator, StackScreenProps } from "@react-navigation/stack";
 import Colors from "../constants/Colors";
 import ItemsStackParamList from "./ItemsStackParamList";
-import AddButton from "../components/AddButton";
+import IconButton from "../components/IconButton";
 import ItemListScreen from "../screens/ItemListScreen";
-import NewItemScreen from "../screens/NewItemScreen";
+import SetItemScreen from "../screens/SetItemScreen";
 import ItemDetailScreen from "../screens/ItemDetailScreen";
 
-export default class ItemsStackNavigator extends Component<StackScreenProps<ItemsStackParamList, 'BottomTabNavigator'>> {
-    private Stack = createStackNavigator<ItemsStackParamList>();
+const ItemsStackNavigator: FunctionComponent<StackScreenProps<ItemsStackParamList, 'BottomTabNavigator'>> = ({ navigation }) => {
+    const Stack = createStackNavigator<ItemsStackParamList>();
 
-    render() {
-        return <this.Stack.Navigator
-            initialRouteName="ItemList"
-            screenOptions={{
-                title: 'Lista de Presentes',
-                headerStyle: {
-                    backgroundColor: Colors.background
-                },
-                headerTitleStyle: {
-                    fontFamily: 'poppins-bold',
-                    fontSize: 24,
-                    color: 'white'
-                },
-                headerTintColor: 'white',
-                headerBackTitleVisible: false
-            }}>
-            <this.Stack.Screen name="ItemList" component={ItemListScreen} options={({ navigation }) => ({
+    return <Stack.Navigator
+        initialRouteName="ItemList"
+        screenOptions={{
+            title: 'Lista de Presentes',
+            headerStyle: {
+                backgroundColor: Colors.background
+            },
+            headerTitleStyle: {
+                fontFamily: 'poppins-bold',
+                fontSize: 24,
+                color: 'white'
+            },
+            headerTintColor: 'white',
+            headerBackTitleVisible: false
+        }}>
+        <Stack.Screen name="ItemList" component={ItemListScreen} options={({ navigation }) => ({
+            headerRight: (headerProps: {
+                tintColor?: string;
+            }) => <IconButton {...headerProps} icon="add-circle" onPress={() => navigation.navigate('SetItem')} />
+        })} />
+        <Stack.Screen name="SetItem" options={{
+            title: 'New Item'
+        }} component={SetItemScreen} />
+        <Stack.Screen
+            name="Item"
+            component={ItemDetailScreen} options={({ navigation, route }) => ({
                 headerRight: (headerProps: {
                     tintColor?: string;
-                }) => <AddButton {...headerProps} onPress={() => navigation.navigate('NewItem')} />
+                }) => <IconButton {...headerProps} icon="create" onPress={() => navigation.navigate('SetItem', { itemId: route.params?.itemId })} />
             })} />
-            <this.Stack.Screen name="NewItem" options={{
-                title: 'New Item'
-            }} component={NewItemScreen} />
-            <this.Stack.Screen
-                name="Item"
-                component={ItemDetailScreen} />
-        </this.Stack.Navigator>;
-    }
+    </Stack.Navigator>;
 }
+
+export default ItemsStackNavigator

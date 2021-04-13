@@ -1,47 +1,45 @@
-import React, { Component } from "react";
+import React, { FunctionComponent } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import ItemsStackNavigator from "./ItemsStackNavigator";
 import Colors from "../constants/Colors";
-import { connect, ConnectedProps } from "react-redux";
+import { useSelector } from "react-redux";
 import CartScreen from "../screens/CartScreen";
 import { StackScreenProps } from "@react-navigation/stack";
 import CheckoutStackParamList from "./CheckoutStackParamList";
 import BottomTabStackParamList from "./BottomTabStackParamList";
 import HomeScreen from "../screens/HomeScreen";
+import { RootState } from "../store/store";
 
-const connector = connect((state) => ({ checkoutItemsLength: state.checkout.checkoutItemsLength }));
-
-interface BottomTabNavigatorProps extends StackScreenProps<CheckoutStackParamList, 'BottomTabNavigator'>, ConnectedProps<typeof connector> {
+interface BottomTabNavigatorProps extends StackScreenProps<CheckoutStackParamList, 'BottomTabNavigator'> {
 }
 
-class BottomTabNavigator extends Component<BottomTabNavigatorProps> {
-    private Tab = createBottomTabNavigator<BottomTabStackParamList>();
+const BottomTabNavigator: FunctionComponent<BottomTabNavigatorProps> = () => {
+    const Tab = createBottomTabNavigator<BottomTabStackParamList>();
+    const checkoutItemsLength = useSelector<RootState, number>(state => state.checkout.checkoutItemsLength);
 
-    render() {
-        return <this.Tab.Navigator
-            initialRouteName="Home"
-            tabBarOptions={{
-                showLabel: false,
-                activeTintColor: Colors.accent
-            }}
-            screenOptions={{
-                tabBarBadgeStyle: {
-                    backgroundColor: Colors.background
-                }
-            }}>
-            <this.Tab.Screen name="Home" component={HomeScreen} options={{
-                tabBarIcon: ({ focused, color, size }) => <Ionicons name={`home${focused ? '' : '-outline'}`} color={color} size={size} />
-            }} />
-            <this.Tab.Screen name="Items" component={ItemsStackNavigator} options={{
-                tabBarIcon: ({ focused, color, size }) => <Ionicons name={`gift${focused ? '' : '-outline'}`} color={color} size={size} />
-            }} />
-            <this.Tab.Screen name="Cart" component={CartScreen} options={{
-                tabBarIcon: ({ focused, color, size }) => <Ionicons name={`basket${focused ? '' : '-outline'}`} color={color} size={size} />,
-                tabBarBadge: this.props.checkoutItemsLength <= 0 ? undefined : this.props.checkoutItemsLength
-            }} />
-        </this.Tab.Navigator>;
-    }
+    return <Tab.Navigator
+        initialRouteName="Home"
+        tabBarOptions={{
+            showLabel: false,
+            activeTintColor: Colors.accent
+        }}
+        screenOptions={{
+            tabBarBadgeStyle: {
+                backgroundColor: Colors.background
+            }
+        }}>
+        <Tab.Screen name="Home" component={HomeScreen} options={{
+            tabBarIcon: ({ focused, color, size }) => <Ionicons name={`${Platform.OS === 'android' ? 'md' : 'ios'}-home${focused ? '' : '-outline'}`} color={color} size={size} />
+        }} />
+        <Tab.Screen name="Items" component={ItemsStackNavigator} options={{
+            tabBarIcon: ({ focused, color, size }) => <Ionicons name={`${Platform.OS === 'android' ? 'md' : 'ios'}-gift${focused ? '' : '-outline'}`} color={color} size={size} />
+        }} />
+        <Tab.Screen name="Cart" component={CartScreen} options={{
+            tabBarIcon: ({ focused, color, size }) => <Ionicons name={`${Platform.OS === 'android' ? 'md' : 'ios'}-basket${focused ? '' : '-outline'}`} color={color} size={size} />,
+            tabBarBadge: checkoutItemsLength <= 0 ? undefined : checkoutItemsLength
+        }} />
+    </Tab.Navigator>;
 }
 
-export default connector(BottomTabNavigator);
+export default BottomTabNavigator

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { FunctionComponent } from "react";
 import { GestureResponderEvent, Image, StyleSheet, ViewProps, Pressable, Dimensions } from "react-native";
 import Item from "../models/item";
 import Card from "./Card";
@@ -9,8 +9,8 @@ interface ListItemProps extends ViewProps {
     onPress(event: GestureResponderEvent): void;
 }
 
-export default class ListItem extends Component<ListItemProps> {
-    private styles = StyleSheet.create({
+const ListItem: FunctionComponent<ListItemProps> = ({ style, onPress, item }) => {
+    const styles = StyleSheet.create({
         container: {
             flex: 1,
             alignItems: 'center',
@@ -42,13 +42,13 @@ export default class ListItem extends Component<ListItemProps> {
         }
     });
 
-    render() {
-        return <Card style={{ ...this.styles.container, ...(this.props.style || {}) }}>
-            <Pressable style={this.styles.touchContainer} onPress={this.props.onPress}>
-                <Image style={this.styles.image} source={this.props.item.image} />
-                <Text style={{ ...this.styles.text, ...this.styles.name }}>{this.props.item.name}</Text>
-                <Text style={{ ...this.styles.text, ...this.styles.price }}>{this.props.item.getValueCurrency()}</Text>
-            </Pressable>
-        </Card>;
-    }
+    return <Card style={{ ...styles.container, ...(style || {}) }}>
+        <Pressable style={styles.touchContainer} onPress={onPress}>
+            <Image style={styles.image} source={{ uri: item.image }} />
+            <Text style={{ ...styles.text, ...styles.name }}>{item.name}</Text>
+            <Text style={{ ...styles.text, ...styles.price }}>{item.getValueCurrency()}</Text>
+        </Pressable>
+    </Card>;
 }
+
+export default ListItem

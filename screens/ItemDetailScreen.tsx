@@ -1,25 +1,20 @@
-import React, { Component } from "react"
+import React, { FunctionComponent, useEffect } from "react"
 import { Image, StyleSheet, View } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import Button from "../components/Button";
 import Text from "../components/Text";
 import ItemsStackParamList from "../navigation/ItemsStackParamList";
 import { ScrollView } from "react-native-gesture-handler";
-import { connect, ConnectedProps } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/actions/checkout";
-import { Observer } from "../components/Observer";
+import { RootState } from "../store/store";
+import Item from "../models/item";
 
-const connector = connect(
-    (state, ownProps) =>
-        ({ item: state.items.itemList[ownProps.route.params.itemId] }),
-    { addToCart }
-);
-
-interface ItemDetailScreenProps extends StackScreenProps<ItemsStackParamList, 'Item'>, ConnectedProps<typeof connector> {
+interface ItemDetailScreenProps extends StackScreenProps<ItemsStackParamList, 'Item'> {
 }
 
-class ItemDetailScreen extends Component<ItemDetailScreenProps> {
-    private styles = StyleSheet.create({
+const ItemDetailScreen: FunctionComponent<ItemDetailScreenProps> = ({ navigation, route }) => {
+    const styles = StyleSheet.create({
         container: {
             flex: 1
         },
@@ -57,38 +52,38 @@ class ItemDetailScreen extends Component<ItemDetailScreenProps> {
         }
     });
 
-    private updateTitle() {
-        this.props.navigation.setOptions({ title: this.props.item?.name });
-    }
+    const { itemId } = route.params;
+    const item = useSelector<RootState, Item | undefined>(state => state.items.itemList[itemId]);
+    const dispatch = useDispatch();
 
-    private addToCart() {
-        if (this.props.item !== undefined) {
-            this.props.addToCart(this.props.item.id);
+    useEffect(() => {
+        navigation.setOptions({ title: item?.name });
+    }, [item]);
+
+    function triggerAddToCart() {
+        if (item !== undefined) {
+            dispatch(addToCart(item.id));
         }
     }
-
-    render() {
-        if (this.props.item === undefined) {
-            return <View style={this.styles.container}>
-                <Text>Item not found!</Text>
-            </View>
-        }
-
-        return <ScrollView contentContainerStyle={this.styles.container}>
-            <View style={this.styles.imageContainer}>
-                <Image style={this.styles.image} source={this.props.item.image} />
-            </View>
-            <View style={this.styles.detailsContainer}>
-                <Text style={this.styles.name}>{this.props.item.name}</Text>
-                <Text style={this.styles.price}>{this.props.item.getValueCurrency()}</Text>
-                <Text style={this.styles.description}>{this.props.item.description}</Text>
-            </View>
-            <View style={this.styles.buttonContainer}>
-                <Button style={this.styles.button} onPress={this.addToCart.bind(this)}>Presentear</Button>
-            </View>
-            <Observer value={this.props.item?.name} didUpdate={this.updateTitle.bind(this)} />
-        </ScrollView>;
+    if (item === undefined) {
+        return <View style={styles.container}>
+            <Text>Item not found!</Text>
+        </View>
     }
+
+    return <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.imageContainer}>
+            <Image style={styles.image} source={{ uri: item.image }} />
+        </View>
+        <View style={styles.detailsContainer}>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.price}>{item.getValueCurrency()}</Text>
+            <Text style={styles.description}>{item.description}</Text>
+        </View>
+        <View style={styles.buttonContainer}>
+            <Button style={styles.button} onPress={triggerAddToCart}>Presentear</Button>
+        </View>
+    </ScrollView>;
 }
 
-export default connector(ItemDetailScreen)
+export default ItemDetailScreen

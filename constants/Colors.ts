@@ -7,4 +7,4 @@ const Colors = {
     primaryDisabled: '#78cff0'
 }
 
-export default Colors;
+export default Colors

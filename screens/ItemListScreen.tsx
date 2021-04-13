@@ -1,18 +1,18 @@
-import React, { Component } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { FlatList, ListRenderItemInfo, StyleSheet } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import ListItem from "../components/ListItem";
 import Item from "../models/item";
 import ItemsStackParamList from "../navigation/ItemsStackParamList";
-import { connect, ConnectedProps } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/store";
+import { fetchItems } from "../store/actions/items";
 
-const connector = connect((state) => ({ itemList: state.items.itemList }));
-
-interface ItemListScreenProps extends StackScreenProps<ItemsStackParamList, 'ItemList'>, ConnectedProps<typeof connector> {
+interface ItemListScreenProps extends StackScreenProps<ItemsStackParamList, 'ItemList'> {
 }
 
-class ItemListScreen extends Component<ItemListScreenProps> {
-    private styles = StyleSheet.create({
+const ItemListScreen: FunctionComponent<ItemListScreenProps> = ({ navigation }) => {
+    const styles = StyleSheet.create({
         container: {
         },
         listItem: {
@@ -20,24 +20,46 @@ class ItemListScreen extends Component<ItemListScreenProps> {
         }
     });
 
-    goToItem(item: Item) {
-        this.props.navigation.navigate('Item', { itemId: item.id });
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const itemList = useSelector<RootState, { [key: string]: Item | undefined }>(state => state.items.itemList);
+    const dispatch = useDispatch();
+
+    const loadItems = useCallback(async () => {
+        setIsRefreshing(true);
+        await dispatch(fetchItems());
+        setIsRefreshing(false);
+    }, [dispatch]);
+
+    useEffect(() => {
+        navigation.addListener('focus', loadItems);
+
+        return () => {
+            navigation.removeListener('focus', loadItems);
+        };
+    }, [loadItems]);
+
+    useEffect(() => {
+        loadItems();
+    }, [dispatch, loadItems]);
+
+    function goToItem(item: Item) {
+        navigation.navigate('Item', { itemId: item.id });
     }
 
-    private mapItems(itemData: ListRenderItemInfo<Item>) {
+    function mapItems(itemData: ListRenderItemInfo<Item>) {
         return <ListItem
-            style={this.styles.listItem}
+            style={styles.listItem}
             item={itemData.item}
-            onPress={this.goToItem.bind(this, itemData.item)} />;
+            onPress={goToItem.bind(undefined, itemData.item)} />;
     }
 
-    render() {
-        return <FlatList
-            contentContainerStyle={this.styles.container}
-            data={Object.values(this.props.itemList)}
-            numColumns={2}
-            renderItem={this.mapItems.bind(this)} />;
-    }
+    return <FlatList
+        contentContainerStyle={styles.container}
+        onRefresh={loadItems}
+        refreshing={isRefreshing}
+        data={Object.values(itemList)}
+        numColumns={2}
+        renderItem={mapItems} />;
 }
 
-export default connector(ItemListScreen)
+export default ItemListScreen

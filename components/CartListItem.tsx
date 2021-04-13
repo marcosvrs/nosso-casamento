@@ -1,19 +1,17 @@
-import React, { Component } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Animated, Image, Pressable, StyleSheet, View, ViewProps } from "react-native";
-import { connect, ConnectedProps } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { CartItem } from "../models/cartItem";
 import Text from "./Text";
 import { removeFromCart } from "../store/actions/checkout";
 
-const connector = connect(undefined, { removeFromCart });
-
-interface CartListItemProps extends ViewProps, ConnectedProps<typeof connector> {
+interface CartListItemProps extends ViewProps {
     item: CartItem;
 }
 
-class CartListItem extends Component<CartListItemProps> {
-    private styles = StyleSheet.create({
+const CartListItem: FunctionComponent<CartListItemProps> = ({ item }) => {
+    const styles = StyleSheet.create({
         container: {
             flex: 1,
             alignItems: 'center',
@@ -59,68 +57,67 @@ class CartListItem extends Component<CartListItemProps> {
         }
     });
 
-    state = {
-        selected: false,
-        x: new Animated.Value(100),
-        backgroundColor: new Animated.Value(0),
+    const dispatch = useDispatch();
+
+    const [selected, setSelected] = useState(false);
+    const [translateX] = useState(new Animated.Value(100));
+    const [backgroundColor] = useState(new Animated.Value(0));
+
+    function select() {
+        setSelected((selected) => !selected);
     }
 
-    private select() {
-        this.setState({ selected: !this.state.selected });
-        const slideToValue = this.state.selected ? 100 : 0;
-        const backgroundColorToValue = this.state.selected ? 0 : 100;
+    useEffect(() => {
+        const slideToValue = selected ? 0 : 100;
+        const backgroundColorToValue = selected ? 100 : 0;
 
-        Animated.spring(this.state.x, {
+        Animated.spring(translateX, {
             toValue: slideToValue,
             useNativeDriver: true
         }).start();
 
-        this.setState({ backgroundColor: new Animated.Value(0) }, () => {
-            Animated.timing(this.state.backgroundColor, {
-                toValue: backgroundColorToValue,
-                duration: 300,
-                useNativeDriver: false
-            }).start();
-        });
+        Animated.timing(backgroundColor, {
+            toValue: backgroundColorToValue,
+            duration: 300,
+            useNativeDriver: false
+        }).start();
+    }, [selected])
+
+    function triggerRemoveFromCart() {
+        dispatch(removeFromCart(item.id));
     }
 
-    private removeFromCart() {
-        this.props.removeFromCart(this.props.item.id);
-    }
-
-    render() {
-        return <View style={this.styles.container}>
-            <Pressable style={{ width: '100%' }} onPress={this.select.bind(this)}>
+    return <View style={styles.container}>
+        <Pressable style={{ width: '100%' }} onPress={select.bind(this)}>
+            <Animated.View style={{
+                ...styles.itemContainer, ...{
+                    backgroundColor: backgroundColor.interpolate({
+                        inputRange: [0, 100],
+                        outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.1)']
+                    })
+                }
+            }}>
+                <View style={styles.contentContainer}>
+                    <Image style={styles.image} source={{ uri: item.image }} />
+                    <View style={styles.detailsContainer}>
+                        <Text style={styles.name}>{item.name}</Text>
+                        <Text style={styles.price}>{item.getValueCurrency()}</Text>
+                    </View>
+                </View>
                 <Animated.View style={{
-                    ...this.styles.itemContainer, ...{
-                        backgroundColor: this.state.backgroundColor.interpolate({
-                            inputRange: [0, 100],
-                            outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.1)']
-                        })
+                    ...styles.deleteContainer, ...{
+                        transform: [{
+                            translateX: translateX
+                        }]
                     }
                 }}>
-                    <View style={this.styles.contentContainer}>
-                        <Image style={this.styles.image} source={this.props.item.image} />
-                        <View style={this.styles.detailsContainer}>
-                            <Text style={this.styles.name}>{this.props.item.name}</Text>
-                            <Text style={this.styles.price}>{this.props.item.getValueCurrency()}</Text>
-                        </View>
-                    </View>
-                    <Animated.View style={{
-                        ...this.styles.deleteContainer, ...{
-                            transform: [{
-                                translateX: this.state.x
-                            }]
-                        }
-                    }}>
-                        <Pressable style={{ width: '100%' }} onPress={this.removeFromCart.bind(this)}>
-                            <Ionicons name="trash-outline" color="rgba(0,0,0,0.1)" size={40} />
-                        </Pressable>
-                    </Animated.View>
+                    <Pressable style={{ width: '100%' }} onPress={triggerRemoveFromCart}>
+                        <Ionicons name={`${Platform.OS === 'android' ? 'md' : 'ios'}-trash-outline`} color="rgba(0,0,0,0.1)" size={40} />
+                    </Pressable>
                 </Animated.View>
-            </Pressable>
-        </View>;
-    }
+            </Animated.View>
+        </Pressable>
+    </View>;
 }
 
-export default connector(CartListItem)
+export default CartListItem

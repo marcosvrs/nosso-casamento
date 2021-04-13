@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { forwardRef } from "react";
 import { StyleSheet, TextInput, TextInputProps } from "react-native";
 
-export default class Input extends Component<TextInputProps> {
-    private styles = StyleSheet.create({
+const Input = forwardRef<TextInput, TextInputProps>((props, ref) => {
+    const styles = StyleSheet.create({
         input: {
             paddingHorizontal: 4,
             paddingVertical: 4,
@@ -10,8 +10,7 @@ export default class Input extends Component<TextInputProps> {
             borderBottomWidth: 1
         }
     });
+    return <TextInput {...props} style={{ ...styles.input, ...(props.style || {}) }} ref={ref}></TextInput>
+})
 
-    render() {
-        return <TextInput {...this.props} style={{ ...this.styles.input, ...(this.props.style || {}) }}></TextInput>
-    }
-}
+export default Input
