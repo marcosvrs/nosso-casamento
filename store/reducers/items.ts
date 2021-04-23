@@ -7,22 +7,26 @@ export interface ItemsState {
     itemList: { [key: string]: Item | undefined };
 }
 
-export interface ItemsAction extends Action<ITEMS_ACTIONS.SET_ITEM> {
+export interface SetItemAction extends Action<ITEMS_ACTIONS.SET_ITEM> {
     item: Item;
 }
 
-export interface ItemListAction extends Action<ITEMS_ACTIONS.FETCH_ITEMS> {
+export interface FetchItemsAction extends Action<ITEMS_ACTIONS.FETCH_ITEMS> {
     itemList: { [key: string]: Item | undefined }
 }
 
-function fetchItems(state: ItemsState, action: ItemListAction) {
+export interface DeleteItemAction extends Action<ITEMS_ACTIONS.DELETE_ITEM> {
+    itemId: string;
+}
+
+function fetchItems(state: ItemsState, action: FetchItemsAction) {
     return {
         ...state,
         itemList: action.itemList
     }
 }
 
-function setItem(state: ItemsState, action: ItemsAction) {
+function setItem(state: ItemsState, action: SetItemAction) {
     return {
         ...state,
         itemList: {
@@ -32,7 +36,21 @@ function setItem(state: ItemsState, action: ItemsAction) {
     }
 }
 
+function deleteItem(state: ItemsState, action: DeleteItemAction) {
+    if (state.itemList[action.itemId] === undefined) {
+        return state;
+    }
+
+    const { [action.itemId]: deletedItem, ...newItems } = state.itemList;
+
+    return {
+        ...state,
+        itemList: newItems
+    };
+}
+
 export default createReducer({ itemList: {} }, {
     [ITEMS_ACTIONS.FETCH_ITEMS]: fetchItems,
-    [ITEMS_ACTIONS.SET_ITEM]: setItem
+    [ITEMS_ACTIONS.SET_ITEM]: setItem,
+    [ITEMS_ACTIONS.DELETE_ITEM]: deleteItem
 })

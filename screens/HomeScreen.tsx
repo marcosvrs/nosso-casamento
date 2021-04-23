@@ -1,11 +1,11 @@
 import React, { FunctionComponent, useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
-import { StackScreenProps } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
-import ItemsStackParamList from "../navigation/ItemsStackParamList";
 import Text from "../components/Text";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { AuthDrawerParamList } from "../navigation/AuthDrawerNavigator";
 
-const HomeScreen: FunctionComponent<StackScreenProps<ItemsStackParamList, 'ItemList'>> = () => {
+const HomeScreen: FunctionComponent<DrawerScreenProps<AuthDrawerParamList, 'Home'>> = () => {
     const styles = StyleSheet.create({
         container: {
             flex: 1,

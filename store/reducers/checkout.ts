@@ -14,6 +14,7 @@ export interface CheckoutState {
     };
     vows: string;
     checkoutItemsLength: number;
+    totalAmount: number;
 }
 
 interface CartAction extends Action<CHECKOUT_ACTIONS.ADD_TO_CART | CHECKOUT_ACTIONS.REMOVE_FROM_CART> {
@@ -44,6 +45,7 @@ function addToCart(state: CheckoutState, action: CartAction, root: RootState) {
     }
 
     state.checkoutItems[action.itemId] = fetchItem;
+    state.totalAmount += fetchItem.value;
     state.checkoutItemsLength += 1;
 
     return { ...state };
@@ -56,6 +58,7 @@ function removeFromCart(state: CheckoutState, action: CartAction) {
 
     const { [action.itemId]: deletedCartItem, ...newCartItems } = state.checkoutItems;
     state.checkoutItems = newCartItems;
+    state.totalAmount -= deletedCartItem?.value ?? 0;
     state.checkoutItemsLength -= 1;
 
     return { ...state };
@@ -84,7 +87,8 @@ export default createReducer({
         phone: ''
     },
     vows: '',
-    checkoutItemsLength: 0
+    checkoutItemsLength: 0,
+    totalAmount: 0
 }, {
     [CHECKOUT_ACTIONS.ADD_TO_CART]: addToCart,
     [CHECKOUT_ACTIONS.REMOVE_FROM_CART]: removeFromCart,

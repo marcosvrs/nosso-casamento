@@ -1,14 +1,36 @@
 import React, { FunctionComponent } from "react";
-import { createStackNavigator, StackScreenProps } from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../constants/Colors";
-import ItemsStackParamList from "./ItemsStackParamList";
 import IconButton from "../components/IconButton";
 import ItemListScreen from "../screens/ItemListScreen";
 import SetItemScreen from "../screens/SetItemScreen";
 import ItemDetailScreen from "../screens/ItemDetailScreen";
+import { useDispatch, useSelector } from "react-redux";
+import User from "../models/user";
+import { RootState } from "../store/store";
+import { ParamListBase } from "@react-navigation/routers";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { AuthDrawerParamList } from "./AuthDrawerNavigator";
+import { StyleSheet, View } from "react-native";
+import { deleteItem } from "../store/actions/items";
 
-const ItemsStackNavigator: FunctionComponent<StackScreenProps<ItemsStackParamList, 'BottomTabNavigator'>> = ({ navigation }) => {
+export interface ItemsStackParamList extends ParamListBase {
+    ItemList: undefined;
+    SetItem: {
+        itemId?: string
+    };
+    Item: {
+        itemId: string
+    }
+}
+
+const ItemsStackNavigator: FunctionComponent<DrawerScreenProps<AuthDrawerParamList, 'Home'>> = () => {
     const Stack = createStackNavigator<ItemsStackParamList>();
+
+    const dispatch = useDispatch();
+    const { user } = useSelector<RootState, {
+        user?: User;
+    }>(state => ({ user: state.auth.user }));
 
     return <Stack.Navigator
         initialRouteName="ItemList"
@@ -26,9 +48,12 @@ const ItemsStackNavigator: FunctionComponent<StackScreenProps<ItemsStackParamLis
             headerBackTitleVisible: false
         }}>
         <Stack.Screen name="ItemList" component={ItemListScreen} options={({ navigation }) => ({
+            headerLeft: (headerProps: {
+                tintColor?: string;
+            }) => <IconButton {...headerProps} icon="menu" onPress={() => navigation.toggleDrawer()} />,
             headerRight: (headerProps: {
                 tintColor?: string;
-            }) => <IconButton {...headerProps} icon="add-circle" onPress={() => navigation.navigate('SetItem')} />
+            }) => user ? <IconButton {...headerProps} icon="add-circle" onPress={() => navigation.navigate('SetItem')} /> : undefined
         })} />
         <Stack.Screen name="SetItem" options={{
             title: 'New Item'
@@ -38,7 +63,10 @@ const ItemsStackNavigator: FunctionComponent<StackScreenProps<ItemsStackParamLis
             component={ItemDetailScreen} options={({ navigation, route }) => ({
                 headerRight: (headerProps: {
                     tintColor?: string;
-                }) => <IconButton {...headerProps} icon="create" onPress={() => navigation.navigate('SetItem', { itemId: route.params?.itemId })} />
+                }) => user ? <View style={{ flexDirection: 'row' }}>
+                    <IconButton {...headerProps} icon="create" onPress={() => navigation.navigate('SetItem', { itemId: route.params?.itemId })} />
+                    <IconButton {...headerProps} icon="remove-circle" onPress={() => dispatch(deleteItem(user.token, route.params?.itemId))} />
+                </View> : undefined
             })} />
     </Stack.Navigator>;
 }

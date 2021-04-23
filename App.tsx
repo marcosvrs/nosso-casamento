@@ -1,11 +1,13 @@
-import React, { FunctionComponent, ReactNode, Reducer, ReducerState, useEffect, useReducer } from "react";
+import React, { FunctionComponent, Reducer, useEffect, useReducer } from "react";
+import { ActivityIndicator, Linking, Platform, StatusBar } from "react-native";
 import * as Font from "expo-font";
 import { InitialState, NavigationContainer } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Provider } from "react-redux";
-import { ActivityIndicator, Linking, Platform, StatusBar, AsyncStorage } from "react-native";
 import { enableScreens } from "react-native-screens";
 import store from "./store/store";
 import CheckoutNavigator from "./navigation/CheckoutNavigator";
+import { refreshSign } from "./store/actions/auth";
 
 enum APP_ACTIONS {
   FONTS_ENABLED = 'FONTS_ENABLED',
@@ -88,6 +90,10 @@ const App: FunctionComponent = () => {
     }
   }, [isReady]);
 
+  useEffect(() => {
+    store.dispatch(refreshSign());
+  }, [store])
+
   if (!fontsLoaded || !isReady) {
     return <ActivityIndicator />;
   }
@@ -98,9 +104,7 @@ const App: FunctionComponent = () => {
     <StatusBar hidden={true} />
     <NavigationContainer
       initialState={initialState}
-      onStateChange={state =>
-        AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
-      }>
+      onStateChange={state => AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))} >
       <CheckoutNavigator />
     </NavigationContainer>
   </Provider>;

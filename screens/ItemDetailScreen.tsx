@@ -3,12 +3,12 @@ import { Image, StyleSheet, View } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import Button from "../components/Button";
 import Text from "../components/Text";
-import ItemsStackParamList from "../navigation/ItemsStackParamList";
 import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/actions/checkout";
 import { RootState } from "../store/store";
 import Item from "../models/item";
+import { ItemsStackParamList } from "../navigation/ItemsStackNavigator";
 
 interface ItemDetailScreenProps extends StackScreenProps<ItemsStackParamList, 'Item'> {
 }

@@ -77,6 +77,8 @@ const GuestForm: FunctionComponent<GuestFormProps> = ({ onSubmit, style }) => {
                 <FormControl containerStyle={styles.input}
                     id="name"
                     label="Nome"
+                    textContentType="name"
+                    autoCompleteType="name"
                     form={form}
                     autoCapitalize="words"
                     returnKeyType="next"
@@ -85,7 +87,10 @@ const GuestForm: FunctionComponent<GuestFormProps> = ({ onSubmit, style }) => {
                     ref={emailRef}
                     id="email"
                     label="Email"
+                    textContentType="emailAddress"
+                    autoCompleteType="email"
                     form={form}
+                    autoCapitalize="none"
                     keyboardType="email-address"
                     returnKeyType="next"
                     onSubmitEditing={() => addressRef.current?.focus()} />
@@ -93,6 +98,8 @@ const GuestForm: FunctionComponent<GuestFormProps> = ({ onSubmit, style }) => {
                     ref={addressRef}
                     id="address"
                     label="Endereço"
+                    textContentType="fullStreetAddress"
+                    autoCompleteType="street-address"
                     form={form}
                     returnKeyType="next"
                     onSubmitEditing={() => phoneRef.current?.focus()} />
@@ -100,6 +107,8 @@ const GuestForm: FunctionComponent<GuestFormProps> = ({ onSubmit, style }) => {
                     ref={phoneRef}
                     id="phone"
                     label="Celular"
+                    textContentType="telephoneNumber"
+                    autoCompleteType="tel"
                     form={form}
                     keyboardType="phone-pad"
                     returnKeyType="next"

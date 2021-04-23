@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from "react";
 import { Keyboard, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
-import ItemsStackParamList from "../navigation/ItemsStackParamList";
 import SetItemForm from "../components/SetItemForm";
+import { ItemsStackParamList } from "../navigation/ItemsStackNavigator";
 
 const SetItemScreen: FunctionComponent<StackScreenProps<ItemsStackParamList, 'SetItem'>> = ({ navigation, route }) => {
     const styles = StyleSheet.create({

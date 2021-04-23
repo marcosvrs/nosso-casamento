@@ -3,10 +3,10 @@ import { FlatList, ListRenderItemInfo, StyleSheet } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import ListItem from "../components/ListItem";
 import Item from "../models/item";
-import ItemsStackParamList from "../navigation/ItemsStackParamList";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { fetchItems } from "../store/actions/items";
+import { ItemsStackParamList } from "../navigation/ItemsStackNavigator";
 
 interface ItemListScreenProps extends StackScreenProps<ItemsStackParamList, 'ItemList'> {
 }

@@ -1,19 +1,16 @@
 import React, { FunctionComponent } from "react";
 import { StyleSheet, View, FlatList, ListRenderItemInfo } from "react-native";
-import { StackScreenProps } from "@react-navigation/stack";
 import Text from "../components/Text";
 import { useSelector } from "react-redux";
-import CheckoutStackParamList from "../navigation/CheckoutStackParamList";
 import { CartItem } from "../models/cartItem";
 import CartListItem from "../components/CartListItem";
 import Button from "../components/Button";
 import Colors from "../constants/Colors";
 import { RootState } from "../store/store";
+import { AuthDrawerParamList } from "../navigation/AuthDrawerNavigator";
+import { DrawerScreenProps } from "@react-navigation/drawer";
 
-interface CartScreenProps extends StackScreenProps<CheckoutStackParamList, 'Cart'> {
-}
-
-const CartScreen: FunctionComponent<CartScreenProps> = ({ navigation }) => {
+const CartScreen: FunctionComponent<DrawerScreenProps<AuthDrawerParamList, 'Home'>> = ({ navigation }) => {
     const styles = StyleSheet.create({
         container: {
             flex: 1

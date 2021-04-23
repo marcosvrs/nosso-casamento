@@ -3,9 +3,14 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Colors from "../constants/Colors";
 import GuestScreen from "../screens/GuestScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/core";
-import CheckoutStackParamList from "./CheckoutStackParamList";
+import { getFocusedRouteNameFromRoute, ParamListBase } from "@react-navigation/core";
 import PaymentScreen from "../screens/PaymentScreen";
+import IconButton from "../components/IconButton";
+
+export interface CheckoutStackParamList extends ParamListBase {
+    BottomTabNavigator: undefined;
+    Guest: undefined;
+}
 
 const CheckoutNavigator: FunctionComponent = () => {
     const Stack = createStackNavigator<CheckoutStackParamList>();
@@ -27,9 +32,13 @@ const CheckoutNavigator: FunctionComponent = () => {
         <Stack.Screen
             name="BottomTabNavigator"
             component={BottomTabNavigator}
-            options={({ route }) => ({
-                headerShown: getFocusedRouteNameFromRoute(route) === 'Cart',
-                title: 'Presentes Selecionados'
+            options={({ route, navigation }) => ({
+                headerShown: false
+                // headerShown: getFocusedRouteNameFromRoute(route) !== 'AuthItems',
+                // headerLeft: (headerProps: {
+                    // tintColor?: string;
+                // }) => <IconButton {...headerProps} icon="menu" onPress={() => navigation.toggleDrawer()} />
+                // title: getFocusedRouteNameFromRoute(route)
             })} />
         <Stack.Screen name="Guest" component={GuestScreen} options={{
             title: 'Dados Pessoais'

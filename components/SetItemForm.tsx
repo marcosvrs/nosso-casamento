@@ -38,7 +38,7 @@ const SetItemForm: FunctionComponent<SetItemFormProps> = ({ itemId, onSubmit, st
         }
     });
 
-    const item = useSelector<RootState, Item | undefined>(state => itemId ? state.items.itemList[itemId] : undefined);
+    const { userToken, item } = useSelector<RootState, { userToken?: string; item?: Item; }>(state => ({ userToken: state.auth.user?.token, item: (itemId ? state.items.itemList[itemId] : undefined) }));
     const dispatch = useDispatch();
 
     const valueRef = React.createRef<TextInput>();
@@ -46,8 +46,9 @@ const SetItemForm: FunctionComponent<SetItemFormProps> = ({ itemId, onSubmit, st
     const descriptionRef = React.createRef<TextInput>();
 
     function onFormSubmit(values: any) {
-        dispatch(setItem({ id: item?.id, name: values.name, value: +values.value.replace(/,/, '.'), image: values.image, description: values.description }));
-
+        if (userToken !== undefined) {
+            dispatch(setItem(userToken, { id: item?.id, name: values.name, value: +values.value.replace(/,/, '.'), image: values.image, description: values.description }));
+        }
         if (onSubmit !== undefined) {
             onSubmit();
         }

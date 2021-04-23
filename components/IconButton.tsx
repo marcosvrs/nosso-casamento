@@ -1,14 +1,13 @@
 import React, { FunctionComponent } from "react";
-import { GestureResponderEvent, Platform, StyleSheet } from "react-native";
-import { StackHeaderTitleProps } from "@react-navigation/stack";
+import { Platform, StyleSheet } from "react-native";
+import { StackHeaderLeftButtonProps } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "./Button";
 
-interface IconButtonProps extends StackHeaderTitleProps {
+interface IconButtonProps extends StackHeaderLeftButtonProps {
     icon: string;
     size?: number;
     tintColor?: string;
-    onPress(event: GestureResponderEvent): void;
 }
 
 const IconButton: FunctionComponent<IconButtonProps> = ({ icon, size, tintColor, onPress }) => {
